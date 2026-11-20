@@ -77,8 +77,10 @@ def ouvir(wav):
 
 
 def pensar(conversa):
-    agora = dt.datetime.now(FUSO).strftime('%A, %d/%m/%Y %H:%M')
-    rotina = '; '.join(f'{q:%a %H:%M} {t}' for q, t in proximos()[:12]) or 'sem dados'
+    d = dt.datetime.now(FUSO)
+    dias = ['segunda-feira', 'terça-feira', 'quarta-feira', 'quinta-feira', 'sexta-feira', 'sábado', 'domingo']
+    agora = f'{dias[d.weekday()]}, {d:%d/%m/%Y %H:%M}'
+    rotina = '; '.join(f'{dias[q.weekday()]} {q:%H:%M} {t}' for q, t in proximos()[:12]) or 'sem dados'
     msgs = [{'role': 'system', 'content': f'{PERSONA}\nAgora: {agora} (Brasília). Próximos itens da rotina: {rotina}.'}]
     msgs += [{'role': 'user' if q == 'voce' else 'assistant', 'content': t} for q, t in conversa[-10:]]
     r = requests.post('https://api.groq.com/openai/v1/chat/completions', headers={'Authorization': f'Bearer {GROQ}'},
